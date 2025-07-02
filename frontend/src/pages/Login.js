@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {
+  Avatar,
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Box,
+  Alert,
+  Paper
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -8,6 +19,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
@@ -18,13 +30,54 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ maxWidth: 300, margin: '2rem auto' }}>
-      <h2>Login</h2>
-      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <button type="submit" style={{ width: '100%' }}>Login</button>
-      {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
-    </form>
+    <Container component="main" maxWidth="xs">
+      <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+            Login
+          </Typography>
+          {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
+          <Box component="form" onSubmit={handleLogin} sx={{ mt: 1, width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Login
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 }
 

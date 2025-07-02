@@ -8,14 +8,14 @@ const registerStudent = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { name, email, password, department_id } = req.body;
+  const { name, email, password } = req.body;
   try {
     const [existing] = await db.query('SELECT id FROM students WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(400).json({ message: 'Email already registered' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    await db.query('INSERT INTO students (name, email, password, department_id) VALUES (?, ?, ?, ?)', [name, email, hashedPassword, department_id]);
+    await db.query('INSERT INTO students (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
     res.status(201).json({ message: 'Student registered successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

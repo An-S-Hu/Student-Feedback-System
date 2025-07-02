@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {
+  Avatar,
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Box,
+  Alert,
+  Paper
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', department_id: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -15,24 +26,84 @@ function Register() {
     setError('');
     setSuccess('');
     try {
-      await axios.post('http://localhost:5000/api/auth/register', form);
+      await axios.post('http://localhost:5000/api/auth/register', {
+        name: form.name,
+        email: form.email,
+        password: form.password
+      });
       setSuccess('Registration successful! You can now log in.');
+      setForm({ name: '', email: '', password: '' });
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      if (err.response?.data?.errors) {
+        setError(err.response.data.errors.map(e => e.msg).join(', '));
+      } else {
+        setError(err.response?.data?.message || 'Registration failed');
+      }
     }
   };
 
   return (
-    <form onSubmit={handleRegister} style={{ maxWidth: 300, margin: '2rem auto' }}>
-      <h2>Register</h2>
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Name" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <input name="department_id" value={form.department_id} onChange={handleChange} placeholder="Department ID" required style={{ display: 'block', width: '100%', marginBottom: 10 }} />
-      <button type="submit" style={{ width: '100%' }}>Register</button>
-      {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
-      {success && <div style={{ color: 'green', marginTop: 10 }}>{success}</div>}
-    </form>
+    <Container component="main" maxWidth="xs">
+      <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+            Student Registration
+          </Typography>
+          {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
+          {success && <Alert severity="success" sx={{ width: '100%', mb: 2 }}>{success}</Alert>}
+          <Box component="form" onSubmit={handleRegister} sx={{ mt: 1, width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Name"
+              name="name"
+              autoComplete="name"
+              autoFocus
+              value={form.name}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Register
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 }
 
