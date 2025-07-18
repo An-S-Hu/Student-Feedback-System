@@ -33,6 +33,9 @@ function Register() {
       });
       setSuccess('Registration successful! You can now log in.');
       setForm({ name: '', email: '', password: '' });
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500); // Redirect after 1.5 seconds
     } catch (err) {
       if (err.response?.data?.errors) {
         setError(err.response.data.errors.map(e => e.msg).join(', '));
