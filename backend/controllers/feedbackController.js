@@ -206,6 +206,26 @@ const getTeacherAnalytics = async (req, res) => {
   }
 };
 
+// Get all courses (for dropdown)
+const getAllCourses = async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT id, name FROM courses');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Get all teachers (for dropdown)
+const getAllTeachers = async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT id, name FROM teachers');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
 module.exports = {
   submitFeedback,
   getAllFeedback,
@@ -215,5 +235,7 @@ module.exports = {
   getFeedbackByCourse,
   getFeedbackByTeacher,
   getCourseAnalytics,
-  getTeacherAnalytics
+  getTeacherAnalytics,
+  getAllCourses,
+  getAllTeachers
 }; 

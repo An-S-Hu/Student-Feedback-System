@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { submitFeedback, getAllFeedback, getFilteredFeedback, updateFeedback, deleteFeedback, getFeedbackByCourse, getFeedbackByTeacher, getCourseAnalytics, getTeacherAnalytics } = require('../controllers/feedbackController');
+const { submitFeedback, getAllFeedback, getFilteredFeedback, updateFeedback, deleteFeedback, getFeedbackByCourse, getFeedbackByTeacher, getCourseAnalytics, getTeacherAnalytics, getAllCourses, getAllTeachers } = require('../controllers/feedbackController');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -72,5 +72,11 @@ router.get('/teacher/:teacher_id',
   authorize('admin'),
   getFeedbackByTeacher
 );
+
+// Get all courses (for dropdown)
+router.get('/courses', authenticate, authorize('student'), getAllCourses);
+
+// Get all teachers (for dropdown)
+router.get('/teachers', authenticate, authorize('student'), getAllTeachers);
 
 module.exports = router; 
