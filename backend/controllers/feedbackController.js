@@ -226,6 +226,31 @@ const getAllTeachers = async (req, res) => {
   }
 };
 
+// Add course (admin)
+const addCourse = async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ message: 'Course name is required' });
+  try {
+    const [result] = await db.query('INSERT INTO courses (name) VALUES (?)', [name]);
+    const [rows] = await db.query('SELECT * FROM courses WHERE id = ?', [result.insertId]);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+// Add teacher (admin)
+const addTeacher = async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ message: 'Teacher name is required' });
+  try {
+    const [result] = await db.query('INSERT INTO teachers (name) VALUES (?)', [name]);
+    const [rows] = await db.query('SELECT * FROM teachers WHERE id = ?', [result.insertId]);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
 module.exports = {
   submitFeedback,
   getAllFeedback,
@@ -237,5 +262,7 @@ module.exports = {
   getCourseAnalytics,
   getTeacherAnalytics,
   getAllCourses,
-  getAllTeachers
+  getAllTeachers,
+  addCourse,
+  addTeacher
 }; 
